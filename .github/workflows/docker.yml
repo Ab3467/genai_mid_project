@@ -20,8 +20,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ secrets.CICD_USERNAME }}/ai-code-reviewer:latest .
+          docker build -t ghcr.io/${{ secrets.CICD_USERNAME }}/GENAI_MID_PROJECT:latest .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ secrets.CICD_USERNAME }}/ai-code-reviewer:latest
+          docker push ghcr.io/${{ secrets.CICD_USERNAME }}/GENAI_MID_PROJECT:latest
