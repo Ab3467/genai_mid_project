@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GHCR
+name: Build and Push Backend & Frontend to GHCR
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Login to GitHub Container Registry
@@ -19,8 +19,16 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build Docker Image
-        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/ci-cd-demo:latest .
+      # ✅ BACKEND IMAGE
+      - name: Build Backend Image
+        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/backend:latest ./backend
 
-      - name: Push Docker Image
-        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/ci-cd-demo:latest
+      - name: Push Backend Image
+        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/backend:latest
+
+      # ✅ FRONTEND IMAGE
+      - name: Build Frontend Image
+        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/frontend:latest ./frontend
+
+      - name: Push Frontend Image
+        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/frontend:latest
