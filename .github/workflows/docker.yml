@@ -1,27 +1,26 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image to GHCR
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
   build:
-    name: Build & Push to GHCR
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.CICD_TOKEN }}" | docker login ghcr.io -u "${{ secrets.CICD_USERNAME }}" --password-stdin
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ secrets.CICD_USERNAME }}/GENAI_MID_PROJECT:latest .
+      - name: Build Docker Image
+        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/ci-cd-demo:latest .
 
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/${{ secrets.CICD_USERNAME }}/GENAI_MID_PROJECT:latest
+      - name: Push Docker Image
+        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/ci-cd-demo:latest
