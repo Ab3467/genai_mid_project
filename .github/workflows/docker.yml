@@ -1,0 +1,27 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Push to GHCR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.CICD_TOKEN }}" | docker login ghcr.io -u "${{ secrets.CICD_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ secrets.CICD_USERNAME }}/ai-code-reviewer:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ secrets.CICD_USERNAME }}/ai-code-reviewer:latest
