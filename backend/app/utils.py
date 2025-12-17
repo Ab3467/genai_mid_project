@@ -12,17 +12,17 @@ if not API_KEY:
     raise ValueError("❌ OPENROUTER_API_KEY not found in .env")
 
 MODEL_URL = "https://openrouter.ai/api/v1/chat/completions"
+
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
+    "HTTP-Referer": "http://localhost:5173",  # REQUIRED
+    "X-Title": "AI Code Reviewer",            # REQUIRED
+    "Content-Type": "application/json",
 }
 
 def call_llm_and_parse_json(system_prompt: str, user_prompt: str):
-    """
-    Calls OpenRouter API and parses JSON output from a model.
-    """
     payload = {
-        "model": "mistralai/mistral-7b-instruct",  # ✅ free model
+        "model": "mistralai/mistral-7b-instruct",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -30,22 +30,20 @@ def call_llm_and_parse_json(system_prompt: str, user_prompt: str):
         "max_tokens": 600
     }
 
-    response = requests.post(MODEL_URL, headers=HEADERS, json=payload)
-    if response.status_code != 200:
-        print("🔥 API error:", response.text)
-        raise ValueError(f"OpenRouter API Error {response.status_code}: {response.text}")
+    res = requests.post(MODEL_URL, headers=HEADERS, json=payload)
 
-    data = response.json()
-    text = data["choices"][0]["message"]["content"]
+    if res.status_code != 200:
+        print("🔥 API error:", res.text)
+        raise ValueError(f"OpenRouter API Error {res.status_code}: {res.text}")
 
+    text = res.json()["choices"][0]["message"]["content"]
+
+    # Extract JSON
     try:
         return json.loads(text)
-    except Exception:
+    except:
         start = text.find("{")
         end = text.rfind("}")
         if start != -1 and end != -1:
-            try:
-                return json.loads(text[start:end+1])
-            except Exception:
-                pass
-        raise ValueError(f"⚠️ Model returned non-JSON:\n{text}")
+            return json.loads(text[start:end+1])
+        raise ValueError(f"⚠ Model returned non-JSON:\n{text}")

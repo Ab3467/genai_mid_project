@@ -1,10 +1,10 @@
 import os
 import json
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException # pyright: ignore[reportMissingImports]
+from pydantic import BaseModel # type: ignore
 from typing import Optional
-from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+from dotenv import load_dotenv # type: ignore
 from pathlib import Path
 
 from .prompts import SYSTEM_PROMPT, make_user_prompt
