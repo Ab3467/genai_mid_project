@@ -1,7 +1,7 @@
 import os
 import json
-import requests
-from dotenv import load_dotenv
+import requests # type: ignore
+from dotenv import load_dotenv # pyright: ignore[reportMissingImports]
 from pathlib import Path
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
