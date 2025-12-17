@@ -1,5 +1,9 @@
 name: CI/CD Docker to GHCR
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
